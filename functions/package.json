@@ -1,0 +1,18 @@
+{
+  "name": "personal-finance-functions",
+  "version": "0.1.0",
+  "private": true,
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "serve": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^4.8.1"
+  },
+  "devDependencies": {
+    "typescript": "~5.4.2"
+  }
+}

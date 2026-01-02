@@ -1,0 +1,15 @@
+rules_version='2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isWhitelisted() {
+      return request.auth != null
+        && request.auth.token.email in ['korotinmain@gmail.com'];
+    }
+
+    match /{document=**} {
+      allow read: if isWhitelisted();
+      allow write: if false;
+    }
+  }
+}
