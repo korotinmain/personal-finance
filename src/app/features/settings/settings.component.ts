@@ -1,38 +1,27 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <section class="page-header">
-      <div>
-        <h2>Налаштування</h2>
-        <p>Доступ, синхронізація та загальні параметри.</p>
-      </div>
-    </section>
-
-    <div class="card wide">
-      <h3>Whitelist доступу</h3>
-      <p>Доступ мають лише ці email:</p>
-      <ul>
-        <li *ngFor="let email of whitelist">{{ email }}</li>
-      </ul>
-    </div>
-
-    <div class="card wide">
-      <h3>Cloud Functions</h3>
-      <p>Оновлення балансів і статусів відбувається лише через серверні функції.</p>
-      <div class="chips">
-        <span>create/update/delete transaction</span>
-        <span>addDebtPayment</span>
-        <span>adjustGoal</span>
-      </div>
-    </div>
-  `
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent {
   whitelist = environment.access.whitelist;
+  environmentLabel = environment.production ? 'Production' : 'Staging';
+
+  constructor(public auth: AuthService, private router: Router) {}
+
+  async signOut(): Promise<void> {
+    try {
+      await this.auth.signOut();
+    } finally {
+      void this.router.navigateByUrl('/login');
+    }
+  }
 }

@@ -1,0 +1,150 @@
+<div class="settings-page">
+  <header class="settings-header">
+    <div>
+      <p class="settings-eyebrow">Налаштування</p>
+      <h2>Керування простором</h2>
+      <p class="settings-subtitle">
+        Профіль, доступи, інтеграції та безпека в одному місці.
+      </p>
+    </div>
+    <div class="header-actions">
+      <span class="env-pill">{{ environmentLabel }}</span>
+    </div>
+  </header>
+
+  <div class="settings-grid">
+    <div class="settings-main">
+      <section class="settings-card">
+        <div class="settings-card-head">
+          <div>
+            <p class="settings-eyebrow">Профіль</p>
+            <h3>Ваш обліковий запис</h3>
+          </div>
+          <span class="status-pill">Активний</span>
+        </div>
+
+        <div *ngIf="auth.user$ | async as user; else noUser" class="profile-row">
+          <div class="profile-avatar">
+            {{ (user.displayName || user.email || "U")[0] }}
+          </div>
+          <div class="profile-meta">
+            <strong>{{ user.displayName || "Користувач" }}</strong>
+            <span>{{ user.email }}</span>
+            <small>Авторизація через Google</small>
+          </div>
+          <button class="button secondary" type="button">Редагувати</button>
+        </div>
+
+        <ng-template #noUser>
+          <div class="profile-row compact">
+            <div class="profile-meta">
+              <strong>Немає активного користувача</strong>
+              <span>Увійдіть, щоб керувати профілем.</span>
+            </div>
+          </div>
+        </ng-template>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-head">
+          <div>
+            <p class="settings-eyebrow">Доступ</p>
+            <h3>Whitelist пошти</h3>
+          </div>
+          <span class="count-pill">{{ whitelist.length }}</span>
+        </div>
+        <p class="card-subtitle">Доступ до простору мають лише ці email:</p>
+        <div class="pill-list">
+          <span class="settings-pill" *ngFor="let email of whitelist">{{ email }}</span>
+        </div>
+        <div class="card-hint">
+          Щоб додати або прибрати адресу, оновіть whitelist у середовищі.
+        </div>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-head">
+          <div>
+            <p class="settings-eyebrow">Безпека</p>
+            <h3>Сеанси та дії</h3>
+          </div>
+        </div>
+        <div class="action-list">
+          <div class="action-item">
+            <div>
+              <strong>Вийти з акаунту</strong>
+              <span>Завершити поточний сеанс на цьому пристрої.</span>
+            </div>
+            <button class="button danger" type="button" (click)="signOut()">
+              Вийти
+            </button>
+          </div>
+          <div class="action-item muted">
+            <div>
+              <strong>Експорт даних</strong>
+              <span>Завантажити історію транзакцій у CSV.</span>
+            </div>
+            <button class="button secondary" type="button" disabled>
+              Незабаром
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="settings-side">
+      <section class="settings-card">
+        <div class="settings-card-head">
+          <div>
+            <p class="settings-eyebrow">Стан системи</p>
+            <h3>Поточні статуси</h3>
+          </div>
+        </div>
+        <div class="status-list">
+          <div class="status-row">
+            <span>Середовище</span>
+            <strong>{{ environmentLabel }}</strong>
+          </div>
+          <div class="status-row">
+            <span>Синхронізація</span>
+            <strong>Автоматично</strong>
+          </div>
+          <div class="status-row">
+            <span>Cloud Functions</span>
+            <strong>Активні</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-head">
+          <div>
+            <p class="settings-eyebrow">Інтеграції</p>
+            <h3>Підключено</h3>
+          </div>
+        </div>
+        <div class="integration-row">
+          <div class="integration-icon">G</div>
+          <div class="integration-meta">
+            <strong>Google</strong>
+            <span>Єдиний спосіб входу</span>
+          </div>
+          <span class="status-pill success">Активно</span>
+        </div>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-head">
+          <div>
+            <p class="settings-eyebrow">Підтримка</p>
+            <h3>Допомога</h3>
+          </div>
+        </div>
+        <div class="support-card">
+          <p>Потрібна допомога або доступ? Напишіть адміністратору.</p>
+          <span class="support-note">Відповідь зазвичай протягом дня.</span>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>

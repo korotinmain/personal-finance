@@ -1,0 +1,154 @@
+<div class="goals-page">
+  <ng-container *ngIf="goals$ | async as goals">
+    <header class="goals-header">
+      <div>
+        <p class="goals-eyebrow">Цілі</p>
+        <h2>Накопичення та плани</h2>
+        <p class="goals-subtitle">Створюйте фінансові цілі та слідкуйте за прогресом у реальному часі.</p>
+      </div>
+      <div class="goals-actions">
+        <button class="ghost" type="button" (click)="openAdjustModal()">Коригувати баланс</button>
+        <button class="primary" type="button" (click)="openCreateModal()">Нова ціль</button>
+      </div>
+    </header>
+
+    <section class="goals-summary" *ngIf="summary$ | async as summary">
+      <div class="summary-card">
+        <p>Накопичено</p>
+        <strong>{{ summary.totalSaved | number: '1.0-0' }}</strong>
+        <span>всього по цілях</span>
+      </div>
+      <div class="summary-card">
+        <p>Активні цілі</p>
+        <strong>{{ summary.active }}</strong>
+        <span>у роботі зараз</span>
+      </div>
+      <div class="summary-card">
+        <p>Завершені</p>
+        <strong>{{ summary.completed }}</strong>
+        <span>виконано</span>
+      </div>
+      <div class="summary-progress" *ngIf="summary.totalTarget > 0">
+        <div class="progress-header">
+          <span>Загальний прогрес</span>
+          <strong>{{ summary.totalSaved | number: '1.0-0' }} / {{ summary.totalTarget | number: '1.0-0' }}</strong>
+        </div>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="summary.progress"
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="goals-grid" *ngIf="goals.length > 0; else emptyState">
+      <article class="goal-card" *ngFor="let goal of goals">
+        <div class="goal-head">
+          <div>
+            <p class="goal-label">Ціль</p>
+            <h3>{{ goal.title }}</h3>
+            <span class="goal-meta">{{ goal.currency }}</span>
+          </div>
+          <span class="goal-status" [class.completed]="isCompleted(goal)">
+            {{ statusLabel(goal) }}
+          </span>
+        </div>
+
+        <div class="goal-metrics">
+          <div>
+            <span>Накопичено</span>
+            <strong>{{ goal.currentAmount | number: '1.0-0' }} {{ goal.currency }}</strong>
+          </div>
+          <div>
+            <span>Потрібно</span>
+            <strong>{{ goal.targetAmount | number: '1.0-0' }} {{ goal.currency }}</strong>
+          </div>
+        </div>
+
+        <div class="goal-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progress(goal)"></div>
+          </div>
+          <span>{{ progress(goal) }}% виконано</span>
+        </div>
+
+        <div class="goal-actions">
+          <button class="ghost" type="button" (click)="openAdjustModal(goal)">Поповнити</button>
+          <button class="ghost" type="button" (click)="openEditModal(goal)">Редагувати</button>
+          <button class="ghost danger" type="button" (click)="deleteGoal(goal)">Видалити</button>
+        </div>
+      </article>
+    </section>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <h3>Додайте першу ціль</h3>
+        <p>Створіть ціль, щоб бачити прогрес накопичень і планів.</p>
+        <button class="primary" type="button" (click)="openCreateModal()">Створити ціль</button>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <div class="modal" *ngIf="isGoalModalOpen">
+    <div class="modal-backdrop" (click)="closeGoalModal()"></div>
+    <div class="modal-content goals-modal">
+      <h3>{{ editingGoalId ? 'Редагування цілі' : 'Нова ціль' }}</h3>
+      <form [formGroup]="goalForm" (ngSubmit)="submitGoal()">
+        <div class="form-grid">
+          <label>
+            Назва цілі
+            <input type="text" formControlName="title" placeholder="Наприклад, подорож" />
+          </label>
+          <label>
+            Валюта
+            <select formControlName="currency">
+              <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+            </select>
+          </label>
+          <label>
+            Цільова сума
+            <input type="number" formControlName="targetAmount" />
+          </label>
+          <label>
+            Поточний баланс
+            <input type="number" formControlName="currentAmount" />
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ghost" (click)="closeGoalModal()">Скасувати</button>
+          <button type="submit" class="primary" [disabled]="goalForm.invalid || isSubmitting">
+            Зберегти
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="isAdjustModalOpen">
+    <div class="modal-backdrop" (click)="closeAdjustModal()"></div>
+    <div class="modal-content goals-modal">
+      <h3>Коригування балансу</h3>
+      <form [formGroup]="adjustForm" (ngSubmit)="submitAdjust()">
+        <div class="form-grid">
+          <label>
+            Ціль
+            <select formControlName="goalId">
+              <option *ngFor="let goal of goalsSnapshot" [value]="goal.id">{{ goal.title }}</option>
+            </select>
+          </label>
+          <label>
+            Сума (мінус для зняття)
+            <input type="number" formControlName="delta" />
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ghost" (click)="closeAdjustModal()">Скасувати</button>
+          <button type="submit" class="primary" [disabled]="adjustForm.invalid || isSubmitting">
+            Зберегти
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

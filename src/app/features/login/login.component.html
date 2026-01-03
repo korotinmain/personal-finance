@@ -1,0 +1,45 @@
+<div class="login-split">
+  <section class="login-hero">
+    <div class="login-hero-overlay"></div>
+    <div class="login-hero-content">
+      <div class="brand">
+        <div class="logo">PF</div>
+        <div class="brand-text">
+          <h1>Personal Finance</h1>
+          <span>Сімейна платформа</span>
+        </div>
+      </div>
+      <h2>Швидко. Надійно. Прибутково.</h2>
+      <p>Спільний контроль витрат, боргів і цілей в одному місці.</p>
+    </div>
+  </section>
+  <section class="login-panel">
+    <div class="login-card" [class.loading]="isLoading" [attr.aria-busy]="isLoading">
+      <div class="login-loading-bar" *ngIf="isLoading"></div>
+      <div class="login-card-header">
+        <h3>Вхід до кабінету</h3>
+        <p>Доступ лише для дозволених email.</p>
+      </div>
+
+      <div class="social-row">
+        <button class="social-button google" (click)="signIn()" [disabled]="isLoading">
+          <span class="social-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" role="img" focusable="false">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.72 1.22 9.22 3.22l6.86-6.86C35.72 1.98 30.2 0 24 0 14.62 0 6.52 5.38 2.56 13.22l7.98 6.2C12.46 13.1 17.78 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.5 24.5c0-1.6-.14-2.72-.46-3.88H24v7.32h12.7c-.26 2.02-1.66 5.06-4.78 7.1l7.34 5.7c4.3-3.98 6.24-9.86 6.24-16.24z"/>
+              <path fill="#FBBC05" d="M10.54 28.22c-.46-1.36-.72-2.82-.72-4.32s.26-2.96.7-4.32l-7.98-6.2C.92 16.2 0 20.02 0 23.9s.92 7.7 2.54 10.9l8-6.58z"/>
+              <path fill="#34A853" d="M24 48c6.2 0 11.42-2.04 15.22-5.56l-7.34-5.7c-1.98 1.38-4.66 2.34-7.88 2.34-6.22 0-11.52-3.6-13.46-8.82l-8 6.58C6.52 42.62 14.62 48 24 48z"/>
+            </svg>
+          </span>
+          <span>{{ isLoading ? "Підключаємо..." : "Увійти через Google" }}</span>
+          <span class="spinner" *ngIf="isLoading" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div class="helper">
+        <span>Потрібен доступ? Напишіть адміністратору.</span>
+      </div>
+      <div class="alert" *ngIf="blocked">Доступ заблокований. Перевірте whitelist.</div>
+    </div>
+  </section>
+</div>

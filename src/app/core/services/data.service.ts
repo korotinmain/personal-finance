@@ -6,7 +6,11 @@ import {
   doc,
   docData,
   query,
-  orderBy
+  orderBy,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  increment
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Wallet } from '../../models/wallet.model';
@@ -46,5 +50,25 @@ export class DataService {
   goal$(goalId: string): Observable<Goal> {
     const ref = doc(this.firestore, `goals/${goalId}`);
     return docData(ref, { idField: 'id' }) as Observable<Goal>;
+  }
+
+  createGoal(payload: Omit<Goal, 'id'>): Promise<void> {
+    const ref = collection(this.firestore, 'goals');
+    return addDoc(ref, payload).then(() => undefined);
+  }
+
+  updateGoal(goalId: string, changes: Partial<Goal>): Promise<void> {
+    const ref = doc(this.firestore, `goals/${goalId}`);
+    return updateDoc(ref, changes as Partial<Goal>).then(() => undefined);
+  }
+
+  deleteGoal(goalId: string): Promise<void> {
+    const ref = doc(this.firestore, `goals/${goalId}`);
+    return deleteDoc(ref).then(() => undefined);
+  }
+
+  adjustGoal(goalId: string, delta: number): Promise<void> {
+    const ref = doc(this.firestore, `goals/${goalId}`);
+    return updateDoc(ref, { currentAmount: increment(delta) }).then(() => undefined);
   }
 }
